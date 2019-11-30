@@ -1,26 +1,27 @@
-var PROTO_FILE_PATH = '/Users/agan/work/front_end/grpc_demo/proto/Student.proto';
+var service = require('../static_codegen/proto/Student_grpc_pb');
+var message = require('../static_codegen/proto/Student_pb');
 
 var grpc = require('grpc');
 
-var grpcService = grpc.load(PROTO_FILE_PATH).com.shengsiyuan.proto;
-
 var server = new grpc.Server();
 
-server.addService(grpcService.StudentService.service, {
+server.addService(service.StudentServiceService, {
     getRealNameByUserName: getRealNameByUserName,
     getStudentByAge: getStudentByAge,
     getStudentWrapperByAges: getStudentWrapperByAges,
     biTalk: biTalk
 });
 
-
-
 server.bind('127.0.0.1:8899', grpc.ServerCredentials.createInsecure());
 server.start();
 
 function getRealNameByUserName(call, callback) {
-    console.log('username：' + call.request.username);
-    callback(null, {realname: 'node-张三'});
+    console.log('username：' + call.request.getUsername());
+
+    var myResponse = new message.MyResponse();
+    myResponse.setRealname('赵六');
+
+    callback(null, myResponse);
 }
 
 function getStudentByAge() {
